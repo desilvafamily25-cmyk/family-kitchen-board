@@ -61,10 +61,7 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           label="Empty dishwasher"
           sublabel="Morning"
           done={board.dishwasher_emptied_done}
-          onToggle={() => onUpdate({ dishwasher_emptied_done: !board.dishwasher_emptied_done, ...(!board.dishwasher_emptied_done ? {} : { dishwasher_emptied_by: '' }) })}
-          completedBy={board.dishwasher_emptied_by}
-          onSelectBy={(name) => onUpdate({ dishwasher_emptied_by: name })}
-          teamMembers={members}
+          onToggle={() => onUpdate({ dishwasher_emptied_done: !board.dishwasher_emptied_done })}
           accentClass={theme.gradient}
           compact={compact}
         />
@@ -73,10 +70,7 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           label="Load dishwasher"
           sublabel="After dinner"
           done={board.dishwasher_loaded_done}
-          onToggle={() => onUpdate({ dishwasher_loaded_done: !board.dishwasher_loaded_done, ...(!board.dishwasher_loaded_done ? {} : { dishwasher_loaded_by: '' }) })}
-          completedBy={board.dishwasher_loaded_by}
-          onSelectBy={(name) => onUpdate({ dishwasher_loaded_by: name })}
-          teamMembers={members}
+          onToggle={() => onUpdate({ dishwasher_loaded_done: !board.dishwasher_loaded_done })}
           accentClass={theme.gradient}
           compact={compact}
         />
@@ -86,10 +80,7 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           sublabel="Wipe benches"
           done={board.kitchen_reset_done}
           disabled={board.kitchen_reset_done}
-          onToggle={() => onUpdate({ kitchen_reset_done: !board.kitchen_reset_done, ...(!board.kitchen_reset_done ? {} : { kitchen_reset_by: '' }) })}
-          completedBy={board.kitchen_reset_by}
-          onSelectBy={(name) => onUpdate({ kitchen_reset_by: name })}
-          teamMembers={members}
+          onToggle={() => onUpdate({ kitchen_reset_done: !board.kitchen_reset_done })}
           accentClass={theme.gradient}
           compact={compact}
         />

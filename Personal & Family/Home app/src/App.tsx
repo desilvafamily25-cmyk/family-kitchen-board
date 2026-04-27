@@ -227,28 +227,14 @@ export default function App() {
     async (updates: Partial<DailyBoard>) => {
       if (!board) return;
       const prev = board;
-      setBoard((b) => (b ? { ...b, ...updates } : b)); // optimistic — always applied
+      setBoard((b) => (b ? { ...b, ...updates } : b)); // optimistic
       const { error } = await supabase
         .from('daily_boards')
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', board.id);
       if (error) {
-        // Migration 002 may not be run yet — retry without *_by fields
-        const withoutBy = Object.fromEntries(
-          Object.entries(updates).filter(([k]) => !k.endsWith('_by'))
-        );
-        if (Object.keys(withoutBy).length > 0) {
-          const { error: e2 } = await supabase
-            .from('daily_boards')
-            .update({ ...withoutBy, updated_at: new Date().toISOString() })
-            .eq('id', board.id);
-          if (e2) {
-            console.error('updateBoard error:', e2);
-            setBoard(prev); // full revert only if even the fallback fails
-          }
-          // *_by optimistic state is intentionally kept even when DB lacks the column
-        }
-        // If update contained only *_by fields, keep optimistic state as-is
+        console.error('updateBoard error:', error);
+        setBoard(prev); // revert
       }
     },
     [board]

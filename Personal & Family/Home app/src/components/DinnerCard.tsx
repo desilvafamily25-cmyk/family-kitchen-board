@@ -93,10 +93,7 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
             label="Prep"
             sublabel="Chop & prepare"
             done={board.dinner_prep_done}
-            onToggle={() => onUpdate({ dinner_prep_done: !board.dinner_prep_done, ...(!board.dinner_prep_done ? {} : { dinner_prep_by: '' }) })}
-            completedBy={board.dinner_prep_by}
-            onSelectBy={(name) => onUpdate({ dinner_prep_by: name })}
-            teamMembers={members}
+            onToggle={() => onUpdate({ dinner_prep_done: !board.dinner_prep_done })}
             accentClass={theme.gradient}
             compact={compact}
           />
@@ -105,10 +102,7 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
             label="Cook"
             sublabel="Get it cooking"
             done={board.dinner_cook_done}
-            onToggle={() => onUpdate({ dinner_cook_done: !board.dinner_cook_done, ...(!board.dinner_cook_done ? {} : { dinner_cook_by: '' }) })}
-            completedBy={board.dinner_cook_by}
-            onSelectBy={(name) => onUpdate({ dinner_cook_by: name })}
-            teamMembers={members}
+            onToggle={() => onUpdate({ dinner_cook_done: !board.dinner_cook_done })}
             accentClass={theme.gradient}
             compact={compact}
           />
@@ -117,10 +111,7 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
             label="Serve"
             sublabel="Set the table"
             done={board.dinner_serve_done}
-            onToggle={() => onUpdate({ dinner_serve_done: !board.dinner_serve_done, ...(!board.dinner_serve_done ? {} : { dinner_serve_by: '' }) })}
-            completedBy={board.dinner_serve_by}
-            onSelectBy={(name) => onUpdate({ dinner_serve_by: name })}
-            teamMembers={members}
+            onToggle={() => onUpdate({ dinner_serve_done: !board.dinner_serve_done })}
             accentClass={theme.gradient}
             compact={compact}
           />
