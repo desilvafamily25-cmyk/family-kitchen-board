@@ -39,8 +39,9 @@ export function TaskTile({
     `}>
       <button
         onClick={disabled ? undefined : onToggle}
-        className={`flex items-center w-full text-left select-none active:scale-[0.97] transition-transform duration-100
+        className={`flex items-center w-full text-left select-none transition-transform duration-100
           ${compact ? 'gap-2 p-2.5' : 'gap-4 p-4'}
+          ${disabled ? 'cursor-default' : 'active:scale-[0.97]'}
         `}
       >
         {/* Icon */}
@@ -70,8 +71,8 @@ export function TaskTile({
               ✓ {completedBy}
             </p>
           )}
-          {done && !completedBy && teamMembers && !compact && (
-            <p className="text-xs text-gray-400 mt-0.5">Tap a name ↓</p>
+          {done && !completedBy && teamMembers && (
+            <p className={`text-gray-400 mt-0.5 ${compact ? 'text-[10px]' : 'text-xs'}`}>Tap a name ↓</p>
           )}
         </div>
 

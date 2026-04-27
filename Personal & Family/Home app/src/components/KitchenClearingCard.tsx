@@ -85,6 +85,7 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           label="Reset kitchen"
           sublabel="Wipe benches"
           done={board.kitchen_reset_done}
+          disabled={board.kitchen_reset_done}
           onToggle={() => onUpdate({ kitchen_reset_done: !board.kitchen_reset_done, ...(!board.kitchen_reset_done ? {} : { kitchen_reset_by: '' }) })}
           completedBy={board.kitchen_reset_by}
           onSelectBy={(name) => onUpdate({ kitchen_reset_by: name })}
