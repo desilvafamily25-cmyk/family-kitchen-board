@@ -184,6 +184,28 @@ export default function App() {
     };
   }, [board?.id]);
 
+  // ── Reset today's board ──────────────────────────────────────────────────
+  const resetBoard = useCallback(async () => {
+    if (!board) return;
+    const cleared: Partial<DailyBoard> = {
+      dinner_prep_done: false,   dinner_prep_by: '',
+      dinner_cook_done: false,   dinner_cook_by: '',
+      dinner_serve_done: false,  dinner_serve_by: '',
+      dishwasher_emptied_done: false, dishwasher_emptied_by: '',
+      dishwasher_loaded_done: false,  dishwasher_loaded_by: '',
+      kitchen_reset_done: false,      kitchen_reset_by: '',
+      mum_school_lunch_done: false,   mum_school_lunch_by: '',
+      dinner_plan: '',
+    };
+    const prev = board;
+    setBoard((b) => (b ? { ...b, ...cleared } : b));
+    const { error } = await supabase
+      .from('daily_boards')
+      .update({ ...cleared, updated_at: new Date().toISOString() })
+      .eq('id', board.id);
+    if (error) { setBoard(prev); }
+  }, [board]);
+
   // ── Update helpers ───────────────────────────────────────────────────────
   const updateBoard = useCallback(
     async (updates: Partial<DailyBoard>) => {
@@ -290,6 +312,7 @@ export default function App() {
         settings={settings}
         onClose={() => setSettingsOpen(false)}
         onUpdate={updateSettings}
+        onResetBoard={resetBoard}
       />
     </motion.div>
   );

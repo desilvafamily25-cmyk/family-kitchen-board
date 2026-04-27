@@ -28,34 +28,29 @@ export function TaskTile({
   accentClass = 'from-emerald-400 to-teal-500',
   disabled = false,
 }: Props) {
+  const showPicker = done && !!teamMembers && !!onSelectBy;
+
   return (
-    <div
-      className={`
-        rounded-2xl border-2 transition-all duration-200
-        ${done ? 'bg-emerald-50 border-emerald-200' : 'bg-white/60 border-gray-200'}
-      `}
-    >
-      {/* Main row */}
-      <motion.button
-        layout
+    <div className={`
+      rounded-2xl border-2 transition-colors duration-200
+      ${done ? 'bg-emerald-50 border-emerald-200' : 'bg-white/60 border-gray-200'}
+    `}>
+
+      {/* Main row — plain button, no Framer layout prop */}
+      <button
         onClick={disabled ? undefined : onToggle}
-        whileTap={disabled ? {} : { scale: 0.97 }}
-        className="flex items-center gap-4 w-full p-4 text-left select-none cursor-pointer"
+        className="flex items-center gap-4 w-full p-4 text-left select-none active:scale-[0.97] transition-transform duration-100"
       >
         {/* Icon box */}
-        <motion.div
-          animate={done ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className={`
-            w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
-            transition-all duration-300
-            ${done ? `bg-gradient-to-br ${accentClass}` : 'bg-gray-100'}
-          `}
-        >
+        <div className={`
+          w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
+          transition-all duration-300
+          ${done ? `bg-gradient-to-br ${accentClass}` : 'bg-gray-100'}
+        `}>
           <span className={`transition-colors duration-300 ${done ? 'text-white' : 'text-gray-500'}`}>
             {icon}
           </span>
-        </motion.div>
+        </div>
 
         {/* Labels */}
         <div className="flex-1 min-w-0">
@@ -71,6 +66,9 @@ export function TaskTile({
             <p className="text-xs font-semibold text-emerald-600 mt-0.5">
               ✓ Done by {completedBy}
             </p>
+          )}
+          {done && !completedBy && teamMembers && (
+            <p className="text-xs text-gray-400 mt-0.5">Tap a name below ↓</p>
           )}
         </div>
 
@@ -93,46 +91,44 @@ export function TaskTile({
             )}
           </AnimatePresence>
         </div>
-      </motion.button>
+      </button>
 
-      {/* Who did it — appears below when ticked */}
-      <AnimatePresence>
-        {done && teamMembers && onSelectBy && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-3 pt-0 border-t border-emerald-100">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">
-                Who did this?
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {teamMembers.map((m) => {
-                  const selected = completedBy === m.name;
-                  return (
-                    <button
-                      key={m.name}
-                      onClick={() => onSelectBy(selected ? '' : m.name)}
-                      className={`
-                        px-3 py-1 rounded-full text-xs font-semibold border-2 transition-all duration-150
-                        ${selected
-                          ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
-                          : `${m.bgClass} ${m.textClass} border-transparent hover:border-current`
-                        }
-                      `}
-                    >
-                      {m.nickname}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Who did it — CSS transition, no Framer height animation (avoids layout conflicts) */}
+      <div className={`
+        overflow-hidden transition-all duration-200 ease-in-out
+        ${showPicker ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'}
+      `}>
+        <div className="px-4 pb-3 border-t border-emerald-100">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2 pt-2">
+            Who did this?
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {teamMembers?.map((m) => {
+              const selected = completedBy === m.name;
+              return (
+                <button
+                  key={m.name}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectBy?.(selected ? '' : m.name);
+                  }}
+                  className={`
+                    px-3 py-1 rounded-full text-xs font-semibold border-2
+                    transition-all duration-150 active:scale-95
+                    ${selected
+                      ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
+                      : `${m.bgClass} ${m.textClass} border-transparent hover:border-current`
+                    }
+                  `}
+                >
+                  {m.nickname}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
