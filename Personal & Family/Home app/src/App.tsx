@@ -187,23 +187,39 @@ export default function App() {
   // ── Reset today's board ──────────────────────────────────────────────────
   const resetBoard = useCallback(async () => {
     if (!board) return;
-    const cleared: Partial<DailyBoard> = {
-      dinner_prep_done: false,   dinner_prep_by: '',
-      dinner_cook_done: false,   dinner_cook_by: '',
-      dinner_serve_done: false,  dinner_serve_by: '',
-      dishwasher_emptied_done: false, dishwasher_emptied_by: '',
-      dishwasher_loaded_done: false,  dishwasher_loaded_by: '',
-      kitchen_reset_done: false,      kitchen_reset_by: '',
-      mum_school_lunch_done: false,   mum_school_lunch_by: '',
+    const booleans = {
+      dinner_prep_done: false,
+      dinner_cook_done: false,
+      dinner_serve_done: false,
+      dishwasher_emptied_done: false,
+      dishwasher_loaded_done: false,
+      kitchen_reset_done: false,
+      mum_school_lunch_done: false,
       dinner_plan: '',
     };
+    const byFields = {
+      dinner_prep_by: '',
+      dinner_cook_by: '',
+      dinner_serve_by: '',
+      dishwasher_emptied_by: '',
+      dishwasher_loaded_by: '',
+      kitchen_reset_by: '',
+      mum_school_lunch_by: '',
+    };
     const prev = board;
-    setBoard((b) => (b ? { ...b, ...cleared } : b));
+    setBoard((b) => (b ? { ...b, ...booleans, ...byFields } : b));
+    // Try with *_by columns first; fall back to booleans-only if columns don't exist yet
     const { error } = await supabase
       .from('daily_boards')
-      .update({ ...cleared, updated_at: new Date().toISOString() })
+      .update({ ...booleans, ...byFields, updated_at: new Date().toISOString() })
       .eq('id', board.id);
-    if (error) { setBoard(prev); }
+    if (error) {
+      const { error: e2 } = await supabase
+        .from('daily_boards')
+        .update({ ...booleans, updated_at: new Date().toISOString() })
+        .eq('id', board.id);
+      if (e2) { console.error('Reset failed:', e2); setBoard(prev); }
+    }
   }, [board]);
 
   // ── Update helpers ───────────────────────────────────────────────────────
@@ -300,8 +316,10 @@ export default function App() {
           {allDone && <CelebrationBanner />}
 
           <TeamOverviewCard board={board} />
-          <DinnerCard board={board} onUpdate={updateBoard} />
-          <KitchenClearingCard board={board} onUpdate={updateBoard} />
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <DinnerCard board={board} onUpdate={updateBoard} compact />
+            <KitchenClearingCard board={board} onUpdate={updateBoard} compact />
+          </div>
 
           {schoolDay && <SchoolDayCard board={board} onUpdate={updateBoard} />}
         </div>

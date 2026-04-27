@@ -14,6 +14,7 @@ interface Props {
   teamMembers?: TeamMember[];
   accentClass?: string;
   disabled?: boolean;
+  compact?: boolean;
 }
 
 export function TaskTile({
@@ -27,56 +28,58 @@ export function TaskTile({
   teamMembers,
   accentClass = 'from-emerald-400 to-teal-500',
   disabled = false,
+  compact = false,
 }: Props) {
   const showPicker = done && !!teamMembers && !!onSelectBy;
 
   return (
     <div className={`
-      rounded-2xl border-2 transition-colors duration-200
+      rounded-xl border-2 transition-colors duration-200
       ${done ? 'bg-emerald-50 border-emerald-200' : 'bg-white/60 border-gray-200'}
     `}>
-
-      {/* Main row — plain button, no Framer layout prop */}
       <button
         onClick={disabled ? undefined : onToggle}
-        className="flex items-center gap-4 w-full p-4 text-left select-none active:scale-[0.97] transition-transform duration-100"
+        className={`flex items-center w-full text-left select-none active:scale-[0.97] transition-transform duration-100
+          ${compact ? 'gap-2 p-2.5' : 'gap-4 p-4'}
+        `}
       >
-        {/* Icon box */}
+        {/* Icon */}
         <div className={`
-          w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
-          transition-all duration-300
+          rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300
+          ${compact ? 'w-8 h-8' : 'w-12 h-12'}
           ${done ? `bg-gradient-to-br ${accentClass}` : 'bg-gray-100'}
         `}>
-          <span className={`transition-colors duration-300 ${done ? 'text-white' : 'text-gray-500'}`}>
+          <span className={`transition-colors duration-300 ${done ? 'text-white' : 'text-gray-500'} ${compact ? '[&>svg]:w-3.5 [&>svg]:h-3.5' : ''}`}>
             {icon}
           </span>
         </div>
 
-        {/* Labels */}
+        {/* Label */}
         <div className="flex-1 min-w-0">
-          <p className={`text-base font-semibold leading-tight transition-all duration-300 ${
-            done ? 'text-gray-400 line-through' : 'text-gray-800'
-          }`}>
+          <p className={`font-semibold leading-tight transition-all duration-300
+            ${compact ? 'text-xs' : 'text-base'}
+            ${done ? 'text-gray-400 line-through' : 'text-gray-800'}
+          `}>
             {label}
           </p>
-          {sublabel && !done && (
+          {sublabel && !done && !compact && (
             <p className="text-xs text-gray-400 mt-0.5">{sublabel}</p>
           )}
           {done && completedBy && (
-            <p className="text-xs font-semibold text-emerald-600 mt-0.5">
-              ✓ Done by {completedBy}
+            <p className={`font-semibold text-emerald-600 mt-0.5 ${compact ? 'text-[10px]' : 'text-xs'}`}>
+              ✓ {completedBy}
             </p>
           )}
-          {done && !completedBy && teamMembers && (
-            <p className="text-xs text-gray-400 mt-0.5">Tap a name below ↓</p>
+          {done && !completedBy && teamMembers && !compact && (
+            <p className="text-xs text-gray-400 mt-0.5">Tap a name ↓</p>
           )}
         </div>
 
         {/* Check circle */}
         <div className={`
-          w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0
-          transition-all duration-300
-          ${done ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-200' : 'border-gray-300'}
+          rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300
+          ${compact ? 'w-6 h-6' : 'w-8 h-8'}
+          ${done ? 'bg-emerald-500 border-emerald-500 shadow-md shadow-emerald-200' : 'border-gray-300'}
         `}>
           <AnimatePresence>
             {done && (
@@ -86,23 +89,23 @@ export function TaskTile({
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 25 }}
               >
-                <Check size={16} className="text-white" strokeWidth={3} />
+                <Check size={compact ? 12 : 16} className="text-white" strokeWidth={3} />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </button>
 
-      {/* Who did it — CSS transition, no Framer height animation (avoids layout conflicts) */}
+      {/* Who did it — CSS transition, no Framer height animation */}
       <div className={`
         overflow-hidden transition-all duration-200 ease-in-out
         ${showPicker ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'}
       `}>
-        <div className="px-4 pb-3 border-t border-emerald-100">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2 pt-2">
-            Who did this?
+        <div className={`border-t border-emerald-100 ${compact ? 'px-2.5 pb-2' : 'px-4 pb-3'}`}>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5 pt-2">
+            Who?
           </p>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
             {teamMembers?.map((m) => {
               const selected = completedBy === m.name;
               return (
@@ -113,11 +116,12 @@ export function TaskTile({
                     onSelectBy?.(selected ? '' : m.name);
                   }}
                   className={`
-                    px-3 py-1 rounded-full text-xs font-semibold border-2
+                    px-2 py-0.5 rounded-full font-semibold border-2
                     transition-all duration-150 active:scale-95
+                    ${compact ? 'text-[10px]' : 'text-xs'}
                     ${selected
                       ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
-                      : `${m.bgClass} ${m.textClass} border-transparent hover:border-current`
+                      : `${m.bgClass} ${m.textClass} border-transparent`
                     }
                   `}
                 >
@@ -128,7 +132,6 @@ export function TaskTile({
           </div>
         </div>
       </div>
-
     </div>
   );
 }
