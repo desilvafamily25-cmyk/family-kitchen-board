@@ -11,6 +11,13 @@ export interface DailyBoard {
   dishwasher_loaded_done: boolean;
   kitchen_reset_done: boolean;
   mum_school_lunch_done: boolean;
+  dinner_prep_by: string;
+  dinner_cook_by: string;
+  dinner_serve_by: string;
+  dishwasher_emptied_by: string;
+  dishwasher_loaded_by: string;
+  kitchen_reset_by: string;
+  mum_school_lunch_by: string;
   updated_at: string;
 }
 

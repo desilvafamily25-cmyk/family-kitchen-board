@@ -126,6 +126,13 @@ export default function App() {
             dishwasher_loaded_done: false,
             kitchen_reset_done: false,
             mum_school_lunch_done: false,
+            dinner_prep_by: '',
+            dinner_cook_by: '',
+            dinner_serve_by: '',
+            dishwasher_emptied_by: '',
+            dishwasher_loaded_by: '',
+            kitchen_reset_by: '',
+            mum_school_lunch_by: '',
           },
           { onConflict: 'board_date', ignoreDuplicates: true }
         )
