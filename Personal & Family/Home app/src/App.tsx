@@ -307,10 +307,10 @@ export default function App() {
       animate={{ opacity: 1 }}
       className="min-h-svh"
     >
-      <div className="max-w-xl mx-auto px-4 pt-safe pb-safe">
+      <div className="max-w-xl mx-auto px-3 pt-safe pb-safe">
         <Header onSettingsClick={() => setSettingsOpen(true)} />
 
-        <div className="mt-4 space-y-0">
+        <div className="space-y-0">
           <ProgressBar completed={completedCount} total={totalCount} />
 
           {allDone && <CelebrationBanner />}
