@@ -126,13 +126,6 @@ export default function App() {
             dishwasher_loaded_done: false,
             kitchen_reset_done: false,
             mum_school_lunch_done: false,
-            dinner_prep_by: '',
-            dinner_cook_by: '',
-            dinner_serve_by: '',
-            dishwasher_emptied_by: '',
-            dishwasher_loaded_by: '',
-            kitchen_reset_by: '',
-            mum_school_lunch_by: '',
           },
           { onConflict: 'board_date', ignoreDuplicates: true }
         )
@@ -187,7 +180,7 @@ export default function App() {
   // ── Reset today's board ──────────────────────────────────────────────────
   const resetBoard = useCallback(async () => {
     if (!board) return;
-    const booleans = {
+    const reset = {
       dinner_prep_done: false,
       dinner_cook_done: false,
       dinner_serve_done: false,
@@ -197,29 +190,13 @@ export default function App() {
       mum_school_lunch_done: false,
       dinner_plan: '',
     };
-    const byFields = {
-      dinner_prep_by: '',
-      dinner_cook_by: '',
-      dinner_serve_by: '',
-      dishwasher_emptied_by: '',
-      dishwasher_loaded_by: '',
-      kitchen_reset_by: '',
-      mum_school_lunch_by: '',
-    };
     const prev = board;
-    setBoard((b) => (b ? { ...b, ...booleans, ...byFields } : b));
-    // Try with *_by columns first; fall back to booleans-only if columns don't exist yet
+    setBoard((b) => (b ? { ...b, ...reset } : b));
     const { error } = await supabase
       .from('daily_boards')
-      .update({ ...booleans, ...byFields, updated_at: new Date().toISOString() })
+      .update({ ...reset, updated_at: new Date().toISOString() })
       .eq('id', board.id);
-    if (error) {
-      const { error: e2 } = await supabase
-        .from('daily_boards')
-        .update({ ...booleans, updated_at: new Date().toISOString() })
-        .eq('id', board.id);
-      if (e2) { console.error('Reset failed:', e2); setBoard(prev); }
-    }
+    if (error) { console.error('Reset failed:', error); setBoard(prev); }
   }, [board]);
 
   // ── Update helpers ───────────────────────────────────────────────────────
