@@ -91,7 +91,6 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
         {/* Dinner plan — two-state */}
         <AnimatePresence mode="wait" initial={false}>
           {showDisplay ? (
-            /* ── Filled display card ── */
             <motion.button
               key="display"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -117,7 +116,6 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
               </div>
             </motion.button>
           ) : (
-            /* ── Empty / editing input ── */
             <motion.div
               key="input"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -158,7 +156,10 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
             label="Prep"
             sublabel="Chop & prepare"
             done={board.dinner_prep_done}
-            onToggle={() => onUpdate({ dinner_prep_done: !board.dinner_prep_done })}
+            doneBy={board.dinner_prep_by || undefined}
+            members={members}
+            onToggle={() => onUpdate({ dinner_prep_done: false, dinner_prep_by: '' })}
+            onPickMember={(abbrev) => onUpdate({ dinner_prep_done: true, dinner_prep_by: abbrev })}
             accentClass={theme.gradient}
             compact={compact}
           />
@@ -167,7 +168,10 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
             label="Cook"
             sublabel="Get it cooking"
             done={board.dinner_cook_done}
-            onToggle={() => onUpdate({ dinner_cook_done: !board.dinner_cook_done })}
+            doneBy={board.dinner_cook_by || undefined}
+            members={members}
+            onToggle={() => onUpdate({ dinner_cook_done: false, dinner_cook_by: '' })}
+            onPickMember={(abbrev) => onUpdate({ dinner_cook_done: true, dinner_cook_by: abbrev })}
             accentClass={theme.gradient}
             compact={compact}
           />
@@ -176,7 +180,10 @@ export function DinnerCard({ board, onUpdate, compact = false }: Props) {
             label="Serve"
             sublabel="Set the table"
             done={board.dinner_serve_done}
-            onToggle={() => onUpdate({ dinner_serve_done: !board.dinner_serve_done })}
+            doneBy={board.dinner_serve_by || undefined}
+            members={members}
+            onToggle={() => onUpdate({ dinner_serve_done: false, dinner_serve_by: '' })}
+            onPickMember={(abbrev) => onUpdate({ dinner_serve_done: true, dinner_serve_by: abbrev })}
             accentClass={theme.gradient}
             compact={compact}
           />

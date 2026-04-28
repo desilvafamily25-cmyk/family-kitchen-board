@@ -61,7 +61,10 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           label="Empty dishwasher"
           sublabel="Morning"
           done={board.dishwasher_emptied_done}
-          onToggle={() => onUpdate({ dishwasher_emptied_done: !board.dishwasher_emptied_done })}
+          doneBy={board.dishwasher_emptied_by || undefined}
+          members={members}
+          onToggle={() => onUpdate({ dishwasher_emptied_done: false, dishwasher_emptied_by: '' })}
+          onPickMember={(abbrev) => onUpdate({ dishwasher_emptied_done: true, dishwasher_emptied_by: abbrev })}
           accentClass={theme.gradient}
           compact={compact}
         />
@@ -70,7 +73,10 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           label="Load dishwasher"
           sublabel="After dinner"
           done={board.dishwasher_loaded_done}
-          onToggle={() => onUpdate({ dishwasher_loaded_done: !board.dishwasher_loaded_done })}
+          doneBy={board.dishwasher_loaded_by || undefined}
+          members={members}
+          onToggle={() => onUpdate({ dishwasher_loaded_done: false, dishwasher_loaded_by: '' })}
+          onPickMember={(abbrev) => onUpdate({ dishwasher_loaded_done: true, dishwasher_loaded_by: abbrev })}
           accentClass={theme.gradient}
           compact={compact}
         />
@@ -79,8 +85,11 @@ export function KitchenClearingCard({ board, onUpdate, compact = false }: Props)
           label="Reset kitchen"
           sublabel="Wipe benches"
           done={board.kitchen_reset_done}
+          doneBy={board.kitchen_reset_by || undefined}
+          members={members}
           disabled={board.kitchen_reset_done}
-          onToggle={() => onUpdate({ kitchen_reset_done: !board.kitchen_reset_done })}
+          onToggle={() => onUpdate({ kitchen_reset_done: false, kitchen_reset_by: '' })}
+          onPickMember={(abbrev) => onUpdate({ kitchen_reset_done: true, kitchen_reset_by: abbrev })}
           accentClass={theme.gradient}
           compact={compact}
         />
