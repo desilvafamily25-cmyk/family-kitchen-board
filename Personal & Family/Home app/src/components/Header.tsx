@@ -9,35 +9,40 @@ interface Props {
 export function Header({ onSettingsClick }: Props) {
   return (
     <motion.header
-      initial={{ opacity: 0, y: -16 }}
+      initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="relative flex items-start justify-between pt-6 pb-2"
+      transition={{ duration: 0.4 }}
+      className="
+        flex items-center justify-between
+        px-4 py-3
+        bg-gradient-to-r from-amber-500 via-orange-400 to-indigo-500
+        rounded-2xl shadow-lg shadow-amber-200/40
+        mb-3
+      "
     >
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-2xl">🍳</span>
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+      <div className="flex items-center gap-2">
+        <span className="text-xl">🍳</span>
+        <div>
+          <h1 className="text-sm font-black text-white tracking-tight leading-tight">
             Family Kitchen Board
           </h1>
+          <p className="text-[11px] text-white/80 font-medium leading-tight">
+            {formatDisplayDate()}
+          </p>
         </div>
-        <p className="text-sm text-gray-500 font-medium">{formatDisplayDate()}</p>
-        <p className="text-xs text-gray-400 mt-0.5">
-          One clear plan. Less arguing. Everyone helps.
-        </p>
       </div>
 
       <button
         onClick={onSettingsClick}
         className="
-          mt-1 flex items-center justify-center w-10 h-10 rounded-2xl
-          bg-white/70 border border-white/60 shadow-sm
-          hover:bg-white/90 active:scale-95
+          flex items-center justify-center w-8 h-8 rounded-xl
+          bg-white/20 border border-white/30
+          hover:bg-white/30 active:scale-95
           transition-all duration-150
         "
         aria-label="Open settings"
       >
-        <Settings size={20} className="text-gray-600" />
+        <Settings size={16} className="text-white" />
       </button>
     </motion.header>
   );

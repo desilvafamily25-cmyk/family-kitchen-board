@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, LogOut, Moon, Sun } from 'lucide-react';
+import { X, LogOut, Moon, Sun, RotateCcw, AlertTriangle } from 'lucide-react';
 import type { AppSettings } from '../types';
 import { supabase } from '../lib/supabaseClient';
 
@@ -8,15 +9,28 @@ interface Props {
   settings: AppSettings;
   onClose: () => void;
   onUpdate: (updates: Partial<AppSettings>) => void;
+  onResetBoard: () => void;
 }
 
-export function SettingsDrawer({ open, settings, onClose, onUpdate }: Props) {
+export function SettingsDrawer({ open, settings, onClose, onUpdate, onResetBoard }: Props) {
+  const [confirmReset, setConfirmReset] = useState(false);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
 
   const toggleSchoolMode = () => {
     onUpdate({ school_mode_enabled: !settings.school_mode_enabled });
+  };
+
+  const handleReset = () => {
+    if (!confirmReset) {
+      setConfirmReset(true);
+      return;
+    }
+    onResetBoard();
+    setConfirmReset(false);
+    onClose();
   };
 
   return (
@@ -30,7 +44,7 @@ export function SettingsDrawer({ open, settings, onClose, onUpdate }: Props) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
-            onClick={onClose}
+            onClick={() => { setConfirmReset(false); onClose(); }}
           />
 
           {/* Drawer panel */}
@@ -50,7 +64,7 @@ export function SettingsDrawer({ open, settings, onClose, onUpdate }: Props) {
             <div className="flex items-center justify-between px-6 pt-safe pb-4 border-b border-gray-100">
               <h2 className="text-lg font-bold text-gray-900">Settings</h2>
               <button
-                onClick={onClose}
+                onClick={() => { setConfirmReset(false); onClose(); }}
                 className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 active:scale-95 transition-all"
                 aria-label="Close settings"
               >
@@ -59,7 +73,7 @@ export function SettingsDrawer({ open, settings, onClose, onUpdate }: Props) {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
 
               {/* School Mode toggle */}
               <div className="rounded-2xl bg-amber-50 border border-amber-100 p-4">
@@ -95,30 +109,57 @@ export function SettingsDrawer({ open, settings, onClose, onUpdate }: Props) {
                     />
                   </button>
                 </div>
-
                 <div className="mt-3 text-xs text-gray-500 border-t border-amber-100 pt-3">
-                  <p>
-                    <strong>ON</strong> — shows school-day section Monday–Friday
-                  </p>
-                  <p className="mt-1">
-                    <strong>OFF</strong> — hides school section (e.g. school holidays)
-                  </p>
+                  <p><strong>ON</strong> — shows school-day section Monday–Friday</p>
+                  <p className="mt-1"><strong>OFF</strong> — hides school section (e.g. school holidays)</p>
                 </div>
+              </div>
+
+              {/* Reset today's board */}
+              <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
+                  Today's board
+                </p>
+                <p className="text-xs text-gray-500 mb-3">
+                  Clears all ticked tasks and the dinner plan for today. Use if someone ticked things by mistake.
+                </p>
+                <button
+                  onClick={handleReset}
+                  className={`
+                    flex items-center gap-2 w-full px-4 py-3 rounded-xl
+                    font-semibold text-sm transition-all duration-150 active:scale-[0.98]
+                    ${confirmReset
+                      ? 'bg-orange-500 text-white border-2 border-orange-500'
+                      : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-orange-300 hover:text-orange-600'
+                    }
+                  `}
+                >
+                  {confirmReset
+                    ? <><AlertTriangle size={15} /> Tap again to confirm reset</>
+                    : <><RotateCcw size={15} /> Reset today's board</>
+                  }
+                </button>
+                {confirmReset && (
+                  <button
+                    onClick={() => setConfirmReset(false)}
+                    className="mt-2 text-xs text-gray-400 w-full text-center"
+                  >
+                    Cancel
+                  </button>
+                )}
               </div>
 
               {/* Team info */}
               <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
-                  Teams
-                </p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Teams</p>
                 <div className="space-y-2 text-sm text-gray-700">
                   <div className="flex items-start gap-2">
                     <span className="font-bold text-amber-600 w-14 flex-shrink-0">Team A:</span>
-                    <span>Dad (Dimuth), Yuvin, Shenara</span>
+                    <span>Dad (Dimuth) ★, Yuvin, Shenara</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="font-bold text-violet-600 w-14 flex-shrink-0">Team B:</span>
-                    <span>Mum (Nishadi), Senuk, Yeshara</span>
+                    <span>Mum (Nishadi) ★, Senuk, Yeshara</span>
                   </div>
                 </div>
                 <p className="text-xs text-gray-400 mt-3">

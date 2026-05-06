@@ -11,6 +11,13 @@ export interface DailyBoard {
   dishwasher_loaded_done: boolean;
   kitchen_reset_done: boolean;
   mum_school_lunch_done: boolean;
+  dinner_prep_by: string;
+  dinner_cook_by: string;
+  dinner_serve_by: string;
+  dishwasher_emptied_by: string;
+  dishwasher_loaded_by: string;
+  kitchen_reset_by: string;
+  mum_school_lunch_by: string;
   updated_at: string;
 }
 
@@ -25,6 +32,7 @@ export interface AppSettings {
 export interface TeamMember {
   name: string;
   nickname: string;
+  abbrev: string;
   color: string;
   bgClass: string;
   textClass: string;
@@ -35,6 +43,7 @@ export const TEAM_A_MEMBERS: TeamMember[] = [
   {
     name: 'Dimuth',
     nickname: 'Dad',
+    abbrev: 'D',
     color: '#d97706',
     bgClass: 'bg-amber-100',
     textClass: 'text-amber-800',
@@ -43,6 +52,7 @@ export const TEAM_A_MEMBERS: TeamMember[] = [
   {
     name: 'Yuvin',
     nickname: 'Yuvin',
+    abbrev: 'Yu',
     color: '#ea580c',
     bgClass: 'bg-orange-100',
     textClass: 'text-orange-800',
@@ -51,6 +61,7 @@ export const TEAM_A_MEMBERS: TeamMember[] = [
   {
     name: 'Shenara',
     nickname: 'Shenara',
+    abbrev: 'Sh',
     color: '#e11d48',
     bgClass: 'bg-rose-100',
     textClass: 'text-rose-800',
@@ -62,6 +73,7 @@ export const TEAM_B_MEMBERS: TeamMember[] = [
   {
     name: 'Nishadi',
     nickname: 'Mum',
+    abbrev: 'M',
     color: '#7c3aed',
     bgClass: 'bg-violet-100',
     textClass: 'text-violet-800',
@@ -70,6 +82,7 @@ export const TEAM_B_MEMBERS: TeamMember[] = [
   {
     name: 'Senuk',
     nickname: 'Senuk',
+    abbrev: 'Se',
     color: '#2563eb',
     bgClass: 'bg-blue-100',
     textClass: 'text-blue-800',
@@ -78,6 +91,7 @@ export const TEAM_B_MEMBERS: TeamMember[] = [
   {
     name: 'Yeshara',
     nickname: 'Yeshara',
+    abbrev: 'Ye',
     color: '#0891b2',
     bgClass: 'bg-cyan-100',
     textClass: 'text-cyan-800',

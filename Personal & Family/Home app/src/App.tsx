@@ -177,6 +177,35 @@ export default function App() {
     };
   }, [board?.id]);
 
+  // ── Reset today's board ──────────────────────────────────────────────────
+  const resetBoard = useCallback(async () => {
+    if (!board) return;
+    const reset = {
+      dinner_prep_done: false,
+      dinner_prep_by: '',
+      dinner_cook_done: false,
+      dinner_cook_by: '',
+      dinner_serve_done: false,
+      dinner_serve_by: '',
+      dishwasher_emptied_done: false,
+      dishwasher_emptied_by: '',
+      dishwasher_loaded_done: false,
+      dishwasher_loaded_by: '',
+      kitchen_reset_done: false,
+      kitchen_reset_by: '',
+      mum_school_lunch_done: false,
+      mum_school_lunch_by: '',
+      dinner_plan: '',
+    };
+    const prev = board;
+    setBoard((b) => (b ? { ...b, ...reset } : b));
+    const { error } = await supabase
+      .from('daily_boards')
+      .update({ ...reset, updated_at: new Date().toISOString() })
+      .eq('id', board.id);
+    if (error) { console.error('Reset failed:', error); setBoard(prev); }
+  }, [board]);
+
   // ── Update helpers ───────────────────────────────────────────────────────
   const updateBoard = useCallback(
     async (updates: Partial<DailyBoard>) => {
@@ -262,17 +291,19 @@ export default function App() {
       animate={{ opacity: 1 }}
       className="min-h-svh"
     >
-      <div className="max-w-xl mx-auto px-4 pt-safe pb-safe">
+      <div className="max-w-xl mx-auto px-3 pt-safe pb-safe">
         <Header onSettingsClick={() => setSettingsOpen(true)} />
 
-        <div className="mt-4 space-y-0">
+        <div className="space-y-0">
           <ProgressBar completed={completedCount} total={totalCount} />
 
           {allDone && <CelebrationBanner />}
 
           <TeamOverviewCard board={board} />
-          <DinnerCard board={board} onUpdate={updateBoard} />
-          <KitchenClearingCard board={board} onUpdate={updateBoard} />
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <DinnerCard board={board} onUpdate={updateBoard} compact />
+            <KitchenClearingCard board={board} onUpdate={updateBoard} compact />
+          </div>
 
           {schoolDay && <SchoolDayCard board={board} onUpdate={updateBoard} />}
         </div>
@@ -283,6 +314,7 @@ export default function App() {
         settings={settings}
         onClose={() => setSettingsOpen(false)}
         onUpdate={updateSettings}
+        onResetBoard={resetBoard}
       />
     </motion.div>
   );
